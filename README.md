@@ -164,3 +164,119 @@ while(guess!=code):
 
 print("Case cracked. Code is "+str(code).zfill(3))
 ```
+
+## Part 3: Same But Not Identical
+
+### Discussion
+For part 3, we need to identify differences between two letters that seem to be
+identical but are actually not. Those differences are needed in order to find the next
+clue for part 4. The letter are as below:
+
+![Picture](https://i.imgur.com/5luPDap.png)
+
+- Problem: Point out every single difference detected between two letters.
+- Assumptions:
+    1. Any differences in spelling will be considered as different words.
+    2. The order of the different words is not important, only the words are compulsory.
+- Based on these assumptions, the problem could be solved using the Longest Common Subsequences Algorithm, which works best for finding differences between two sequences.
+- Other algorithms that could be used to solve the problem include Merge Sort and Quick Sort.
+
+|Algorithm|Merge Sort|Quick Sort|Longest Common Subsequences|
+|---------|----------|----------|---------------------------|
+|Introduction to Algorithm|Merge sort is a recursive sorting algorithm that operates by dividing the unsorted list into smaller sublists, sorting them individually, and then merging them back together to obtain a sorted result|Follows a divide-and-conquer apprach> It starts by selecting a pivot element from the array and partitioning the other elements into two subarrays, according to whether they are less than or greated than the pivot. The pivot is then in its final sorted position|A method that finds the longest shared between two or more sequences. It works by comparing elements and creating a table to track the common elements.|
+|Advantages|Provide stable and predictable performance|In-place partitioning and recursive nature reduce the need for additional memory|Efficiently finds the longest common subsequence, which helps identify the common elements between the two letters|
+|Limitations|It only compares correcponding elements during the merging process|It does not consider higher-;evel linguistic structures or semantinc meaning|The time and space complexity of the algorithm can be relatively high, especially for larger inputs|
+
+- The Longest Common Subsequences Algorithm is the chosen algorithm but it needs to be modified to record the differences between the two letters.
+    1. The modified LCS algorithm tracks elements that are not part of the common subsequence.
+    2. A backtracking step is introduced to trace the table, identify differing elements, and mark or store them in a separate list or data structure.
+    3. During backtracking, the algorithm compares elements from the original letters to determine differences, considering their positions and order.
+
+### Pseudocode
+1. Create a function `lcsCompare` that takes `arr1`, `arr2`, `differences1`, and
+`differences2` as input.
+2. Implement `initializeTable` to create a table and initialize its first row and column.
+3. Develop `fillTable` to populate the table based on the elements of `arr1` and `arr2`.
+4. Create `backtrack` to trace the table and identify the differences between `arr1` and
+`arr2`.
+5. Implement `markDifference` to add non-matching elements to the respective
+difference lists.
+6. Inside `lcsCompare`, call `initializeTable`, `fillTable`, and `backtrack` in sequence.
+7. The differences will be stored in `differences1` and `differences2` for further use.
+
+### Running Time Complexity
+- Best case: The two input arrays (letters) have no differences and are identical. The time complexity is O(m*n), where m and n represent the lengths of the input arrays.
+- Average case: The two input arrays have some common elements and some differences. The time complexity is also O(m*n), with additional time proportional to the length of the LCS for backtracking and printing.
+- Worst case: The two input arrays have no common elements and every element is different. The time complexity is O(m*n), where m and n represent the lengths of the input arrays.
+
+### Code
+```
+def lcsCompare(arr1, arr2, differences1, differences2):
+    m = len(arr1)
+    n = len(arr2)
+    # Initialize the table with zeros
+    table = [[0] * (n+1) for _ in range(m+1)]
+    # Fill the table
+    for i in range(1, m+1):
+        for j in range(1, n+1):
+            if arr1[i-1] == arr2[j-1]:
+                table[i][j] = table[i-1][j-1] + 1
+            else:
+                table[i][j] = max(table[i-1][j], table[i][j-1])
+    # Backtrack to find the differences
+    i = m
+    j = n
+    while i > 0 and j > 0:
+        if arr1[i-1] == arr2[j-1]:
+            i -= 1
+            j -= 1
+        elif table[i-1][j] >= table[i][j-1]:
+            markDifference(arr1[i-1], None, differences1, differences2)
+            i -= 1
+        else:
+            markDifference(None, arr2[j-1], differences1, differences2)
+            j -= 1
+
+    while i > 0:
+        markDifference(arr1[i-1], None, differences1, differences2)
+        i -= 1
+
+    while j > 0:
+        markDifference(None, arr2[j-1], differences1, differences2)
+        j -= 1
+
+def markDifference(element1, element2, differences1, differences2):
+    if element1 is not None:
+        differences1.append(element1)
+    if element2 is not None:
+        differences2.append(element2)
+
+def store_essays():
+    essays = []
+    for i in range(2):
+        essay = []
+        print(f"Enter your {i + 1} essay. Press Enter on an empty line to finish.")
+        while True:
+            line = input()
+            if line == "":
+                break
+            words = line.split() # Split the line into words
+            essay.extend(words) # Add the words to the essay list
+            essays.append(essay)
+            return essays
+
+# Example usage
+essays_array = store_essays()
+arr1 = essays_array[0]
+arr2 = essays_array[1]
+
+differences1 = []
+differences2 = []
+
+lcsCompare(arr1, arr2, differences1, differences2)
+
+print("Differences in Letter 1:")
+print(' , '.join(differences1))
+print("\nDifferences in Letter 2:")
+print(' , '.join(differences2))
+```
