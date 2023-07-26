@@ -478,3 +478,315 @@ print()
 ```
 
 ## Part 6: Find The Next Clue
+
+### Discussion
+|Item|Weight|
+|----|------|
+|A sack of corn for the chicken at the barn| 12kg|
+|A hoe for the green house|5kg|
+|An oil tank filled with fuel for the boat at lake|10kg|
+|Four pieces of tyres for the car in the garage|16kg|
+
+- Mr. Marshall visits a shed and discovers a trolley and several items.
+- Problem: Find out which item was carried on the trolley.
+- The trolley has a maximum weight capacity of 30 kg.
+- Assumptions:
+    * Items are independent of each other.
+    * The trolley has a maximum weight capacity.
+- Three proposed algorithms: **Dynamic Programming, Greedy Algorithm, and Brute Force**.
+
+|Algorithm|Dynamic Programming|Greedy Algorithm|Brute Force|
+|---------|-------------------|----------------|-----------|
+|Introduction to algorithm|An algorithmic technique that solves optimization problems by breaking them into smaller overlapping subproblems. It efficiently stores and reuses computed results to avoid redundant computations, leading to improved time and space complexity| Makes locally optimal choices at each step, hoping to find a globally optimal solution. It selects the best available option at each stage without considering long-term consequences. Greedy algorithms are simple to implement and often provide fast solutions, but they may not always guarantee an optimal solution|A straightforward approach that exhaustively explores all possible solutions to a problem.|
+|Advantages|Efficiently solves complex optimization problems by breaking them down into smaller overlapping subproblems|Simple to implement and understand|Guarantees finding an optimal solution by systematically exploring all possible solutions|
+|Limitations|If the shed contains a large number of items, the dynamic programming algorithm's memory usage may become a limitation, especially if the available computational resources memory capacity are limited|May select the heaviest item first and continue adding items based on weight until the trolley's capacity is reached|May computationally expensive when deling with larger sets of items|
+
+- **Dynamic Programming** is used to determine which item was carried on the trolley.
+- It is well-suited for optimization problems where we want to find the best solution within given constraints.
+- Dynamic Programming allows us to explore various combinations of items while considering their weights and the trolley's weight capacity.
+- This allows us to find the best combination of items that maximizes the trolley's weight capacity without surpassing it.
+
+### Pseudocode
+1. Initialize the number of items as the length of the "items" list.
+2. Create a 2D list, "dp," with dimensions (num_items + 1) x (trolley_capacity + 1) and fill it with zeros.
+3. Iterate over each item from 1 to num_items:
+    a. Get the weight of the current item.
+    b. Iterate over each capacity from 1 to trolley_capacity:
+        - If the weight of the current item is less than or equal to the current capacity:
+            - Set dp[i][capacity] as the maximum value between dp[i-1][capacity] and dp[i-1][capacity - weight] + weight.
+        - Otherwise, set dp[i][capacity] as dp[i-1][capacity].
+4. Initialize an empty list, "carried_items," and set capacity as trolley_capacity.
+5. Retrieve the total weight carried on the trolley from dp[num_items][trolley_capacity].
+6. Iterate over the items in reverse order (from num_items to 1):
+    - If dp[i][capacity] is not equal to dp[i-1][capacity]:
+        - Add the current item and its weight to the "carried_items" list.
+        - Decrease the capacity by the weight of the current item.
+7. Reverse the order of "carried_items" to correct the item order.
+8. Return the "carried_items" list and the total weight.
+
+### Running Time Complexity
+- Worst Case: Time complexity is O(n * W), where n represents the number of items and W represents the trolley capacity.
+- Best Case: Time complexity is O(1) when the trolley capacity is very small or when the items list is empty.
+- Average Case: Time complexity is also O(n * W), assuming a random distribution of item weights and trolley capacity.
+
+### Code
+```
+def findCarriedItem(items, trolley_capacity):
+    num_items = len(items)
+    dp = [[0] * (trolley_capacity + 1) for _ in range(num_items + 1)]
+
+    # Filling in the dynamic programming table
+    for i in range(1, num_items + 1):
+        weight = items[i - 1][1]
+        for capacity in range(1, trolley_capacity + 1):
+            if weight <= capacity:
+                dp[i][capacity] = max(dp[i - 1][capacity], dp[i - 1][capacity - weight] + weight)
+            else:
+                dp[i][capacity] = dp[i - 1][capacity]
+
+    # Tracking the carried items and remaining capacity
+    carried_items = []
+    capacity = trolley_capacity
+    total_weight = dp[num_items][trolley_capacity]
+
+    # Tracing back to determine the carried items
+    for i in range(num_items, 0, -1):
+        if dp[i][capacity] != dp[i - 1][capacity]:
+            item, weight = items[i - 1]
+            carried_items.append(item)
+            capacity -= weight
+
+    carried_items.reverse()  # Correcting the order of the carried items
+
+    return carried_items, total_weight
+
+
+# Example usage
+items = [
+    ("A sack of corn for the chicken at the barn.", 12),
+    ("A hoe for the greenhouse.", 5),
+    ("An oil tank filled with fuel for the boat at the lake.", 10),
+    ("Two pieces of tires for the car in the garage.", 8),
+    ("Two pieces of tires for the car in the garage.", 8)
+]
+trolley_capacity = 30
+
+carried_items, total_weight = findCarriedItem(items, trolley_capacity)
+print("The item(s) carried on the trolley are:")
+for item in carried_items:
+    print("- " + item)
+
+print("Total weight carried on the trolley:", total_weight)
+```
+
+## Part 7: ALmost There!
+
+### Discussion
+Based on the items carried, I visited all the areas. I found another secret message in a bottle in one of the areas!
+
+![Picture](https://i.imgur.com/XWCJFIT.png)
+
+- The task is to unjumble a secret message.
+- Assumptions:
+    * The capital letters of each secret word is the first letter of it.
+    * A sentence will be made once all the words are unjumbled.
+- A dictionary file is used to compare with the secret message.
+- Three proposed solutions: Brute Force Algorithm, Modified Pattern Matching Algorithm, and Anagram Algorithm.
+
+|Algorithm|Brute Force Algorithm
+Modified Pattern Matching Algorithm|Anagram Algorithm|
+|---------|------------------------|-----------------|
+|Introduction to Algorithm|Straightforward method of solving a problem that relies on sheer computing power and trying every possibility rather than advanced techniques to improve efficiency|Compare the length of the jumbled up words with the one inside the dictionary|Algotirhm that compares two strings by arraging both strings alphabetically|
+|Advantages|Guaranteed way to finf the correct solution by listing all the possible candidate solutions for the problem|Just like Brute Force, a guaranteed way to find the correct solution|Faster compared to previous algorithms. Reduced time complexity|
+|Limitations|Iterates through all permutations|Not widely recognized but closely resembles a pattern matching algorithm|Requires memory to store the sorted words inside the dictionary|
+|Modifications|Add another requirement when comparing the permutations with the words inside the dictionary|Add another requirement when comparing the words with the words inside the dictionary|Add another requirement when comparing the words with the words inside the dictionary|
+
+- The chosen algorithm is the Anagram Algorithm.
+- It has a lower time complexity compared to Brute Force.
+- It has a higher time complexity compared to Modified Pattern Matching, but the sorting operation is generally more efficient than the string manipulations used in Modified Pattern Matching.
+
+### Pseudocode
+1. Load a dictionary of valid words.
+2. Accept the jumbled word as input.
+3. Arrange the word alphabetically.
+4. Arrange the words inside the dictionary alphabetically.
+5. Compare the arranged word and the arranged words in the dictionary.
+6. If there’s a match, add it to the list of solutions.
+7. Repeat step 3-6 for all the other words.
+8. Display the sentence.
+
+### Running Time Complexity
+- The running time complexity is O(w * m * (k log k)), where w is the number of words in the list, m is the number of words in the dictionary, and k is the length of the longest word.
+- Compared to Brute Force Algorithm, this algorithm has a shorter running time complexity, lower memory usage, and a more efficient search process.
+- Best Case: Time complexity is O(1) when the input word is an anagram of a word in the dictionary and it is encountered early in the search process.
+- Worst Case: Time complexity is O(w * m * k * log k) when the input word is not an anagram of any word in the dictionary.
+- Average Case: Time complexity is also approximately O(w * m * k * log k), assuming a random distribution of input words.
+
+### Code
+```
+'''def load_dictionary(file_path):
+    with open(file_path, 'r') as file:
+        word_list = [word.strip().lower() for word in file]
+    return word_list'''
+
+
+def anagram(word,dictionary):
+
+
+    for i in range(len(word)):
+        if word[i].isupper():
+            front = word[i]
+
+
+    sorted_word = sorted(word.lower())
+
+
+    for dict_word in dictionary:
+        if len(dict_word) == len(word):
+            sorted_dict_word = sorted(dict_word)
+
+
+            if (sorted_dict_word == sorted_word and dict_word[0]==front.lower()):
+                solved_words=dict_word
+    return (solved_words)
+print("Anagram Algorithm\n")
+#dictionary_file = "C:/Users/ACER/Desktop/Python/dictionary.txt"
+words = ['haTt','enPros', 'asH', 'eMvito']
+answer = []
+
+
+# dictionary = load_dictionary(dictionary_file)
+dictionary = ["mom","dad","family","that","game","life","person","cat","dog","bird","has","ash","people","hat","motive","working","work"]
+for i in range(len(words)):
+    answer.append(anagram(words[i],dictionary))
+
+
+print(answer)
+```
+
+## Part 8: Murder Suspect
+
+### Discussion
+So from the last message, I know the murderer must have a strong motive. Is it money? Or something else? I list each family member's characteristics, relationship with Mr Marshall and net worth below
+
+|Name|Relationship|Character|Net Worth($)|
+|----|------------|---------|------------|
+|Jones Marshall|Son|Always rude to people especially his father|1 Mil|
+|Jenna Marshall|Daughter|The quiet one in the family|700K|
+|Peter Marshall|Brother|Animal lover|50K|
+|Penelope Marshall|Sister|Playful despite of her old age|500K|
+|Will Marshall|Uncle|Retired army officer|10K|
+
+- Problem: Who has the most significant motive to be the suspect in this murder?
+- Solution suggestion: Use a scoring approach to determine the suspects in the murder case.
+- The scoring quantitatively assesses various factors related to each family member, including their relationship, characteristics, and net worth.
+- The algorithm assigns weights to specific attributes and characteristics to capture their potential significance in relation to the motive for murder.
+- Assumptions:
+    * Certain attributes, such as being a son or daughter or having specific characteristics, can contribute to a higher motive for murder.
+    * The net worth of each family member can potentially influence their motive for murder.
+
+| |Greedy Algorithm|Dynamic Programming|Brute Force Algorithm|
+|-|----------------|-------------------|---------------------|
+|Introduction to algorithm|Greedy algorithm that makes the locally optimal choice at each step in the hope of finding a globally optimal solution|Dynamic programming is an algorithm that solves a problem by first solving smaller versions of the problem and then using the solutions to the smaller problems to solve the larger problem|Trying all possible solutions.Tries every possible values until it finds a combination that solves the problem|
+|Advantages|Simple to understand|Can be used to solve problems that are too complex for the greedy algorithm|A guarantee to find the optimal solution, if one exist|
+|Limitations|Not always guaranteed to find the optimal solution|Can be difficult to implement and inefficient for problems with large numbers of subproblems|Tries all possible solutions to the problem, which can be very time-consuming for problem with large numbers of possible solutions|
+
+- The chosen algorithm is the Greedy Algorithm, which is the simplest and most efficient algorithm.
+- The Greedy Algorithm is a good compromise between speed and accuracy.
+- The original Greedy Algorithm focuses on making locally optimal choices at each step to achieve the overall best solution.
+- In the modified code, a dictionary is introduced to store each family member's information, allowing multiple properties to be associated with each family member.
+
+### Pseudocode
+1. Initialize a set of suspects to be empty.
+2. For each family member:
+    1. Calculate the motive score for the family member.
+    2. If the motive score is greater than the current maximum motive score:
+        1. Set the current maximum motive score to the motive score.
+        2. Add the family member to the suspects set.
+3. Sort the set of suspects by their motive scores, in descending order.
+4. Return the top k suspects from the set of suspects, where k is the number of suspects that we want to return.
+
+### Running Time Complexity
+- Best Case: Time complexity is O(1) when the number of family members is very small.
+- Average Case: Time complexity is O(n log n) when the number of family members is moderate.
+- Worst Case: Time complexity is also O(n log n) when the number of family members is large.
+
+### Code
+```
+def greedy_suspect(family_members, max_suspects):
+    # Calculate the motive score for each family member.
+    for member in family_members:
+        motive_score = calculate_motive_score(member)
+        member["motive_score"] = motive_score
+
+    # Sort the family members by their motive score, in descending order.
+    family_members.sort(key=lambda x: x["motive_score"], reverse=True)
+
+    # Extract the names of the top max_suspects family members.
+    suspects = [member["name"] for member in family_members[:max_suspects]]
+
+    # Return the list of suspect names.
+    return suspects
+
+def calculate_motive_score(member):
+    motive_score = 0
+
+    # Assign motive score based on relationship
+    if "Son" in member["relationship"] or "Daughter" in member["relationship"]:
+        motive_score += 3
+    elif "Brother" in member["relationship"] or "Sister" in member["relationship"]:
+        motive_score += 2
+    elif "Uncle" in member["relationship"]:
+        motive_score += 1
+
+    # Assign motive score based on characteristics
+    if "rude" in member["character"]:
+        motive_score += 3
+    elif "quiet" in member["character"]:
+        motive_score += 2
+    elif "lover" in member["character"] or "playful" in member["character"] or "retired" in member["character"]:
+        motive_score += 1
+
+    # Assign motive score based on net worth
+    if member["net_worth"] < 100000:
+        motive_score += 1
+    elif member["net_worth"] > 99999:
+        motive_score -= 1
+
+    return motive_score
+
+def main():
+    # Get the number of family members from the user.
+    num_members = int(input("Enter the number of family members: "))
+
+    # Create a list to store the family members' information.
+    family_members = []
+
+    # Prompt the user for each family member's information.
+    for i in range(num_members):
+        name = input("Enter the name of family member {}: ".format(i+1))
+        relationship = input("Enter the relationship of {}: ".format(name))
+        character = input("Enter the character of {}: ".format(name))
+        net_worth = float(input("Enter the net worth of {} ($): ".format(name)))
+
+        # Create a dictionary to store the family member's information.
+        member = {
+            "name": name,
+            "relationship": relationship,
+            "character": character,
+            "net_worth": net_worth
+        }
+        # Add the member to the list.
+        family_members.append(member)
+
+    # Find the most likely suspect using the greedy algorithm.
+    suspects = greedy_suspect(family_members, 1)
+
+    # Print the result.
+    print("The most likely suspects are:")
+    for suspect in suspects:
+        print(suspect)
+
+if __name__ == "__main__":
+    main()
+```
