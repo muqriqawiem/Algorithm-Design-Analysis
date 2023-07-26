@@ -593,9 +593,9 @@ Based on the items carried, I visited all the areas. I found another secret mess
 - A dictionary file is used to compare with the secret message.
 - Three proposed solutions: Brute Force Algorithm, Modified Pattern Matching Algorithm, and Anagram Algorithm.
 
-|Algorithm|Brute Force Algorithm
+|Algorithm|Brute Force Algorithm|
 Modified Pattern Matching Algorithm|Anagram Algorithm|
-|---------|------------------------|-----------------|
+|---------|------------------------|-----------------|--------------|
 |Introduction to Algorithm|Straightforward method of solving a problem that relies on sheer computing power and trying every possibility rather than advanced techniques to improve efficiency|Compare the length of the jumbled up words with the one inside the dictionary|Algotirhm that compares two strings by arraging both strings alphabetically|
 |Advantages|Guaranteed way to finf the correct solution by listing all the possible candidate solutions for the problem|Just like Brute Force, a guaranteed way to find the correct solution|Faster compared to previous algorithms. Reduced time complexity|
 |Limitations|Iterates through all permutations|Not widely recognized but closely resembles a pattern matching algorithm|Requires memory to store the sorted words inside the dictionary|
