@@ -789,3 +789,11 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+## Contributors
+- Hazeeq Syakirin bin Azahar
+- Muhammad Izzul Izzani bin Abu Bakar
+- Mohamad Qhalish bin Mohd Haroma
+- Muhammad Arif Ezuan bin Mohd Fauzi
+- Muhammad Adam Aiman bin Helmi
+- Muhammad Muqri Qawiem bin Hanizam
