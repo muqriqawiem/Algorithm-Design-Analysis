@@ -406,7 +406,7 @@ search_books(target_words, book_library)
 ### Discussion
 - Problem: Decode a specific secret message to find the next clue to Part 6.
 - The secret message are as below:
-    - ```
+    ```
     Ymfy ujwxts nx htrnsl ktw rj! Nk dtz knsi ymnx styj, qttp fwtzsi rd
     uwtujwyd. Mnsy: N anxnyji ymj fwjf bnym rd ywtqqjd kwtr ymj lfwijs
     xmji.
