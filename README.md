@@ -280,3 +280,125 @@ print(' , '.join(differences1))
 print("\nDifferences in Letter 2:")
 print(' , '.join(differences2))
 ```
+
+## Part 4: Find That Book
+
+### Discussion
+- Problem: Find the possible book title in the library in the quickest time from the different words found between the two letters in Part 3.
+- Assumptions:
+    - The book title is derived from different words found in the second letter.
+    - The unique words ‘Great’, ‘Winter’, ‘Night’, and ‘Fun time’ are potential candidates for the book title.
+- Suggested algorithms to solve this problem include binary search, brute force algorithm, and Rabin-Karp algorithm.
+
+| |Binary Search Algorithm|Brute Force Algorithm|Rabin-Karp Algorithm|
+|-|-----------------------|---------------------|------------------|
+Introduction to Algorithm|Binary Search is a divide-and-conquer that can be used to search for a value in a sorted list. It works by repeatedly dividing the list in half and searching the smaller half until the value is found|A simple algorihtm that can be used to search for a value in a list. It works by simple comparing the value to each item in the list until it is found|A hash-based algorithm that can be used to search for a value in a list. It works by creating a hash value for the value that we are searching for. The hash value is a unique identifier for the value, and it can be used to quickly compare the value to the items in the list|
+|Advantages|A very efficient algorithm. It can find the value in a sorted list in logarithmic time|A simple algorithm. It is easy to understand and implement|It can find the value in a list in linear time. This means that the time it takes to find the value increases as the size of the list increases|
+|Limitations|Requires the list to be sorted before it can be used|Inefficient for large lists. This is because the algorithms needs to compare the value to each item in the list.|Relies on a good hash function to generate the hash values for the test and pattern strings. If the hash function is not good, then the algorithm may not be able to find the pattern in the text.|
+
+- The chosen algorithm is the binary search algorithm.
+    - The books in the library are sorted alphabetically, allowing binary search to quickly narrow down the search space by repeatedly dividing it in half.
+    - This significantly reduces the number of comparisons needed compared to brute force or Rabin-Karp algorithm.
+- To use binary search for this problem, some modifications are needed:
+    - Instead of searching for a single target element, the algorithm searches for multiple target words within the book titles.
+    - The modification involves using the all() function and a list comprehension to check if all the target words are present in the current book title within the binary search loop.
+
+### Pseudocode
+1. Initialize the low and high pointers to 0 and the length of the list, respectively.
+2. While the low pointer is less than or equal to the high pointer:
+    a. Calculate the middle pointer by taking the average of the low and high pointers.
+    b. Compare the value to the item at the middle pointer.
+        i. If the value is equal to the item at the middle pointer, then the value has been found and the algorithm returns the middle pointer.
+        ii. If the value is less than the item at the middle pointer, then the value must be in the lower half of the list. In this case, set the low pointer to the middle pointer + 1.
+        iii. If the value is greater than the item at the middle pointer, then the value must be in the upper half of the list. In this case, set the high pointer to the middle pointer - 1.
+3. Return -1 if the value is not found.
+
+### Running Time Complexity
+- The running time complexity of the binary search algorithm is generally O(log n), where n represents the number of books in the library.
+- Best case: The target words are found at the beginning of the list, taking constant time, O(1).
+- Average case: The target words are randomly distributed throughout the list, taking a running time complexity of O(log n).
+- Worst case: The target words are not found in the list, taking a running time complexity of O(log n).
+
+### Code
+```
+def binary_search(target_words, book_list):
+
+    # sort the books alphabetically
+    book_library.sort()
+
+    start = 0
+    end = len(book_list) - 1
+
+    while start <= end:
+        mid = (start + end) // 2
+        mid_title = book_list[mid].lower()
+
+        if all(word.lower() in mid_title for word in target_words):
+            return mid
+        elif mid_title < target_words[0].lower():
+            start = mid + 1
+        else:
+            end = mid - 1
+
+    return -1
+
+def find_book(target_words, book_library):
+    lower_target_words = [word.lower() for word in target_words]
+
+    for index, title in enumerate(book_library):
+        lower_title = title.lower()
+        if all(word in lower_title for word in lower_target_words):
+            print(f"Book containing all target words [ {', '.join(target_words)} ] found : '{title}', Index : {index}")
+            return
+
+    print(f"Book containing all target words '{', '.join(target_words)}' not found in the library.")
+
+
+def search_books(target_words, book_library):
+    find_book(target_words, book_library)
+
+
+# library book list
+book_library = [
+        "The Alchemist", "To Kill a Mockingbird", "The Great Gatsby", "1984", "Harry Potter and the Sorcerer's Stone",
+        "The Lord of the Rings", "The Hunger Games", "The Catcher in the Rye", "The Da Vinci Code", "Gone Girl",
+        "The Girl With the Dragon Tattoo", "The Book Thief", "The Curious Incident of the Dog in the Night-Time", "The Martian", "Where the Crawdads Sing",
+        "The Hitchhiker's Guide to the Galaxy", "The Kite Runner", "The Help", "The Fault in Our Stars", "Me Before You",
+        "The Book of Negroes", "The Girl on the Train", "The Woman in the Window", "The Shack", "Americanah",
+        "Educated", "Where the Wind Leads", "The Nightingale", "The Alice Network", "The Guernsey Literary and Potato Peel Pie Society",
+        "The Seven Husbands of Evelyn Hugo", "The Midnight Library", "The Giver of Stars", "Pachinko", "The Four Winds",
+        "The Last Days of Ptolemy Grey", "The Book of Longings", "The Lincoln Highway", "Malibu Rising", "The Thursday Murder Club",
+        "The House in the Cerulean Sea", "The Ministry for the Future", "Project Hail Mary",
+        "The Great Winter Night Time", "Don Quixote", "War and Peace", "Ulysses", "Pride and Prejudice", "In Search of Lost Time", "Great Expectations",
+        "Adventures of Huckleberry Finn", "Crime and Punishment", "Mody-Dick", "Hamlet", "The Odyssey", "The Iliad", "The Adventures of Tom Sawyer",
+        "Little Women", "Jane Eyre", "The Scarlet Letter", "The Adventures of Don Quixote", "The Metamorphosis", "The Grapes of Wrath", "Things Fall Apart",
+        "The Color Purple", "The Handmaid's Tale", "The God of Small Things", "The Time Traveler's Wife", "Divergent", "The Secret History", "Animal Farm",
+        "The Diary of a Young Girl", "The Little Prince", "Romeo and Juliet", "The Chronicles of Narnia", "Fahrenheit", "The Giver",
+        "Charlotte's Web", "Of Mice and Men", "Wuthering Heights", "Night", "Gone With the Wind", "The Picture of Dorian Gray", "Brave New World",
+        "Les Miserable", "Memoirs of a Geisha", "The Secret Garden", "A Christmas Carol", "The Advantures of Tom Sawyer",
+        "Ender's Game", "One Hundred Years of Solitude", "A Tale of Two Cities", "The Outsiders", "Anne of Green Gables", "Winnie The Pooh",
+        "A Thousand Splendid Suns", "Life of Pi", "Tuesday With Morrie", "The Count of Monte Cristo", "Catch-22", "Anna Karenina", "Flowers for Algernon",
+        "Slaughterhouse-Five", "The Old Man and the Sea", "Frankenstein", "MacBeth", "Lolita", "Siddhartha", "Little House Series",
+        "A Tree Grows in Brroklyn", "A Clockwork Orange", "Uncle Tom's Cabin", "The Stand", "Atles Shrugged", "All Quiet on the Western Front",
+        "The Poisonwood Bible", "The Brothers Karamazov", "The Good Earth", "I Know Why the Caged Bird Sings", "A Wrinkle in Time",
+        "Dracula", "Matilda", "Sense and Sensibility", "The Perks of Being a Wallflower", "Complete Tales and Poems", "Fountainhead",
+        "Where the Red Fern Grows", "The Princess Bride", "East of Eden", "The Lovely Bones", "Charlie and the Chocolate Factory", "Watership Down",
+        "The Five People You Meet in Heaven", "A Prayer for Owen Meany", "Rebecca", "Angel's Ashes", "Perfume", "The Bell Jar", "The Call of the Wild",
+        "Dune", "Bridge of Terabithia", "Water for Elephants", "The Divine Comedy", "A Midsummer Night's Dream", "The Three Musketeers",
+        "The Name of the Rose", "Persuasion", "The Red Tent", "The Road", "The Girl with the Dragon Tattoo", "The Pillars of the Earth", "Oliver Twist",
+        "The Canterbury Tales", "And Then Were None", "The Secret Life of Bees", "His Dark Materials Trilogy", "On the Road", "Heart of Darkness",
+        "Love in the Time of Cholera", "The Master and Margarita", "The Shadow of the Wind", "Interview With the Vampire", "Invisible Man", "In Cold Blood",
+        "Aesops Fables", "Gulliver's Travels", "The Origin of Species", "Walden", "Roots", "The Glass Castle", "The Boy in the Striped Pajamas",
+        "Sophie's World", "The Screwtape Letters", "Robinson Crusoe", "The Strange Case of Dr. Jekyll and Mr. Hyde", "Candide", "The Prince",
+        "The Complete Sherlock Holmes", "Fight Club", "The Art of War", "The Mists of Avalon", "The Time Machine", "Watchmen", "The Godfather", "The Trial",
+        "The Sun Also Rises", "Tuck Everlasting", "Stranger in a Strange Land", "Emma", "Atonement", "The Complete Brothers Grimm Fairy Tales", "Beloved",
+        "James and the Giant Peach", "Leaves of Grass", "Bury My Heart at Wounded Knee", "The Things They Carried", "Their Eyes Were Watching God",
+        "The Phantom Toolbooth", "Number the Stars", "Middlesex", "The World According to Garp", "A Separate Peace", "Great Winter Night Time",
+        "Winter Night : A Great Time for Fun"
+]
+
+target_words = input("Enter the target words (separated by SPACE): ").split()
+search_books(target_words, book_library)
+```
+
+## Part 5: Secret Message
