@@ -402,3 +402,79 @@ search_books(target_words, book_library)
 ```
 
 ## Part 5: Secret Message
+
+### Discussion
+- Problem: Decode a specific secret message to find the next clue to Part 6.
+- The secret message are as below:
+    - ```
+    Ymfy ujwxts nx htrnsl ktw rj! Nk dtz knsi ymnx styj, qttp fwtzsi rd
+    uwtujwyd. Mnsy: N anxnyji ymj fwjf bnym rd ywtqqjd kwtr ymj lfwijs
+    xmji.
+    ```
+- Assumptions:
+    1. The secret message is short and cannot be decoded using advanced algorithms such as Frequency Analysis Algorithm or Index of Coincidence (IOC).
+    2. The victim, being a businessman, might not have knowledge of professional encryption strategies and might have used his creativity to create the secret message.
+    3. There might be a clue left by the victim on how to decode the secret message.
+- Based on these assumptions, the secret message was likely implemented using a simple encryption method and could be solved using the Brute Force Algorithm.
+    - Notable variations of the algorithm that could be used include Caesar Cipher, Vigenere Cipher, and Transposition Cipher.
+    - To choose the best variation, a comparison check is needed.
+
+| |Caesar Cipher|Vignere Cipher|Transposition Cipher|
+|-|-------------|--------------|--------------------|
+|Introduction to Algorithm|A simple substitution cipher where each letter in the message is shifted a certain number of positions down or up the alphabet. To decode a message encoded with a Caesar Cipher, we can apply the opposite shift to each letter|Works by using a keyword or phrase to determine multiple letter shofts during decryption. Each letter of the message is shifted based on the corresponding letter of the keyword. This creates a more complex encryption pattern compared to the simple letter shofting of the Caesar Cipher. To decode the message, the same keyword is used to reverse the shifting process and retrieve the original message.|Transposition cipher works by rearranging the order of characters in the message based on a predetermined key. By applying the key's arrangement pattern in revese, the recipient can restore the original order of the character and reveal the message. Transposition ciphers do not change the actual characters but manipulate their positions, making it important to know the correct ket yo successfully decode the message|
+|Key parameter| Shift value|Repeating keyword|Transposition rule|
+|Security level|Relatively weak|Stronger than Caesar cipher if keyword is long|Security depends on complexity and secrecy of the transposition rule|
+|Limitation|Limited key space - the caesar cipher has a fixed key space of 25 possibilities since there are only 25 potential shifts in the English alphabet. This means that if the actual key used for encryption if not known, we would need to try all possible shifts to find the correct decryption|Keyword dependency - requires knowledge of the keyword used during the encryption. If the length of the keyword is unknown, it is hard to determine the exact key length. If the keyword is long or randomly generated, decryptinh the message without the correct key becomes extremely difficult|Keyword dependency - heavily relies on the knowledge of the correct key or arrangement pattern used during encryption. Without the correct key, it becomes extremely difficult to decrypt the message accurately.|
+
+- The chosen variation of the Brute Force algorithm is the Caesar cipher.
+    - It provides the best solution for simple decoding problems and is suitable for the assumed lower security level of the secret message.
+    - The clue left behind by the victim in the secret message is assumed to be the negative integer (-5), which stands out as a pattern by itself.
+    - Out of all three variations, only the key for Caesar cipher needs to be in a single integer value.
+
+### Pseudocode
+1. Initialize an empty string called plaintext to store the decrypted message.
+2. Iterate through each character, denoted as char, in the given ciphertext.
+3. If char is alphabetic:
+    i. Determine the ASCII offset based on whether char is lowercase or uppercase.
+    ii. Decrypt the character by subtracting the ASCII offset and the given shift value, then take the modulo 26 and add the ASCII offset back.
+    iii. Append the decrypted character, denoted as decrypted_char, to the plaintext.
+4. If char is not alphabetic, simply append it to the plaintext.
+5. Return the plaintext as the decrypted message.
+6. Set the ciphertext as the encrypted message you want to decrypt.
+7. For each shift value from 1 to 25:
+    i. Decrypt the ciphertext using the current shift value in a forward direction and store it in a variable called decrypted_message_forward.
+    ii. Decrypt the ciphertext using the negative of the current shift value in a backward direction and store it in a variable called decrypted_message_backward.
+    iii. Print both decrypted messages for the current shift value and a blank line to improve readability.
+
+### Running Time Complexity
+- The running time complexity of the Caesar cipher algorithm is generally O(n), where n represents the length of the message being decoded.
+- Best case: The shift value is 0, meaning no decryptions are needed. The time complexity is O(1) or constant time.
+- Worst case: The shift value is at its max (25), meaning the algorithm needs to iterate through the problem 25 times to perform shifts on the characters. The time complexity is O(n).
+- Average case: The total number of shifts is between the best and worst case (not 0 and 25). The time complexity is still O(n).
+
+### Code
+```
+def caesar_decrypt(ciphertext, shift):
+    plaintext = ""
+    for char in ciphertext:
+        if char.isalpha():
+            ascii_offset = ord('a') if char.islower()
+        else
+            ord('A')
+            decrypted_char = chr((ord(char) - ascii_offset - shift) % 26 + ascii_offset)
+        plaintext += decrypted_char
+    else:
+        plaintext += char
+    return plaintext
+
+ciphertext = "Ymfy ujwxts nx htrnsl ktw rj! Nk dtz knsi ymnx styj,qttp fwtzsi rd uwtujwyd. Mnsy: N anxnyji ymj fwjf bnym rd ywtqqjdkwtr ymj lfwijs xmji. - 5"
+# Try all possible shift values from 1 to 25
+for shift in range(1, 26):
+    decrypted_message_backward = caesar_decrypt(ciphertext, shift)
+    decrypted_message_forward = caesar_decrypt(ciphertext, -shift)
+print(f"Shift {shift} (Forward): {decrypted_message_forward}")
+print(f"Shift {shift}(Backward):{decrypted_message_backward}")
+print()
+```
+
+## Part 6: Find The Next Clue
