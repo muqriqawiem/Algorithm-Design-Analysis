@@ -108,3 +108,59 @@ def bfs(start_room):
 print("Begin searching:")
 bfs("entrance")
 ```
+
+## Part 2: Cracking the Chest Lock Code
+
+### Discussion
+![Picture](https://i.imgur.com/o0KU4X6.png)
+
+- Problem: To open the old safe, the correct 3-digit number combination is needed. Since the actual code is not known, multiple combinations must be tried until the safe opens.
+- Assumptions:
+    1. The actual 3-digit number combination is assumed to be a randomized number between 0 to 999.
+- There are three ways to find the correct combination:
+    1. Exhausting all combinations using brute force algorithms.
+    2. Using a binary search algorithm to narrow down the possible combinations.
+    3. Using a randomized guessing algorithm where the program will keep guessing using random combinations until the safe is open.
+
+|Algorithm|Brute Force Algorithm|Binary Search Algorithm|Randomized Guessing Algorithm|
+|---------|---------------------|-----------------------|-----------------------------|
+|Introduction to algorithm|A straightforward method os solving a problem that relies on sheer computing power and trying every possibility rather than advanced techniques to improve efficiency. In this case, we'll try every possible lock combination starting from 000 yo 999.|A methof used to find the position of a specific value, in this case the correct code in a sorted array. It works with the principle of divide and conquer.|A method that is self explanatory. The program will randomly pick a number and try it> If it fails, it'll try a different number until the safe is open|
+|Advantages|A guaranteed way to find the correct solution by listing all the possible candidate solutions for the problem|Faster especially for large arrays|Utilizes random guessing strategy. This allows it to potentially crack the code in fewer attempts on average|
+|Limitations| Inefficient. The time complexity goes above O(n!)|Data must be ordered|The larger the space, the longer it takes to finish|
+|Modifications|Instead of letting the algorithm go through all the possible combinations, it will stop when it finds the correct one|Initial guess is randomized. This will allow it to potentially crack the code in fewer attempts on average|Create a list of guessed numbers to prevent the program from guessing the same number multiple times|
+
+- The chosen algorithm is the Randomized Guessing Algorithm.
+    - It is the 2nd fastest algorithm and is more realistic and practical to use in this situation.
+    - It does not require prior knowledge of the combination like the Binary Search Algorithm.
+    - It uses the element of randomness, allowing it to crack the code in fewer attempts than the brute force algorithm.
+
+### Pseudocode
+1. Pick a random number between a given range.
+2. Try the number.
+3. If the lock opens, the current combination is the correct one.
+4. If it fails, repeat steps 1-3 until the correct combination is found.
+
+### Running Time Complexity
+- The running time complexity of the Randomized Guessing Algorithm is O(1000), which can be simplified as O(1) because the upper bound is fixed.
+    - Compared to the other two algorithms, it shares the same time complexity as the Brute Force Algorithm but is better due to its randomness.
+    - The Binary Search Algorithm has a lower time complexity of O(log n) but is not suitable for this situation.
+- Best case: The first attempt correctly guesses the desired solution, denoted as O(1).
+- Average case: Proportional to the number of possibilities, with an expected value of O(500), which simplifies to O(1).
+- Worst case: After guessing all possible solutions, denoted as O(1000) or O(n).
+
+### Code
+```
+import random
+print("Randomized Guessing Algorithm")
+code = random.randint(0,999)
+guess = random.randint(0,999)
+guessed = []
+while(guess!=code):
+
+
+    guessed.append(guess)
+    while guess in guessed:
+        guess=random.randint(0,999)
+
+print("Case cracked. Code is "+str(code).zfill(3))
+```
