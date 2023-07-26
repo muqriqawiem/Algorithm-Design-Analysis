@@ -42,3 +42,69 @@ How to search all the rooms in the building without missing any?
 Advantage|Easy to implement as it require minimal and simple code|Guarantees finding the shortest path between two vertices in an unweighted graph|Beneficial for problems that require backtracking or pruning of search spaces|
 |Limitation|Require visiting each room sequentially. Since the roon in the mansion is not in linear structure and has multiple routes to search all the rooms in the mansion, this algorithm is not suitable for efficiently exploring all the rooms|Since there are multiple rooms connecting to each other, it can potentially result in redundant visits to some rooms as some rooms will be explored multiple times|Will explore to the farthest room in the 1st floow before backtracking and return to the ground floow again without finishing exploring the 1st floor. This would be time consuming and inefficient|
 
+- BFS is the most suitable algorithm for exploring all the rooms in the mansion.
+    - Linear search is limited to handling simple lists and would require sorting the list of rooms first, making it less efficient.
+    - DFS explores the mansion by going as deep as possible before backtracking, which can significantly increase the time taken to explore all the rooms compared to BFS.
+    - BFS explores the mansion in a breadth-first manner, visiting all neighboring rooms before moving on to the next level of rooms. This ensures that all reachable rooms are visited and can be useful when finding the shortest path or determining connectivity between rooms.
+- In summary, BFS is selected due to its ability to efficiently visit all reachable rooms, handle non-sequential lists, and ensure comprehensive coverage of the entire mansion.
+
+### Pseudocode
+1. Define the adjacency list representing the mansion's rooms.
+2. Define the BFS function that takes the starting room as input.
+3. Create an empty set to keep track of visited rooms and an empty queue.
+4. Enqueue the starting room with "No clue" status and run the BFS algorithm.
+5. While the queue is not empty, dequeue a room and its clue status from the queue.
+6. If the room has not been visited, mark it as visited and get its neighbors from the adjacency list.
+7. Check the clue status based on the current room's clue status, print it, and enqueue the neighbors with the updated clue status.
+8. Perform BFS starting from the "entrance" on the ground floor.
+
+### Running Time Complexity
+- The running time complexity of the provided code is dependent on the number of rooms (n) and the connections between them in the mansion.
+- In the worst-case scenario, where all rooms are interconnected, the BFS algorithm will visit each room exactly once with a time complexity of O(1) for visiting each room and its neighbors.
+- Since the problem requires searching all rooms in the mansion, the best-case and average-case will be similar to the worst-case scenario.
+- Therefore, the overall time complexity of the BFS algorithm is O(n), assuming that accessing the adjacency list and performing operations on the queue take constant time.
+
+### Code
+```
+from collections import deque
+
+# Define the adjacency list representing the mansion's rooms
+adjacency_list = {
+    "entrance": {"neighbors": ["main hall"], "clue": False},
+    "main hall": {"neighbors": ["utility", "dining"], "clue": False},
+    "dining": {"neighbors": ["balcony", "main hall", "kitchen"], "clue": False},
+    "balcony": {"neighbors": ["dining", "kitchen"], "clue": False},
+    "kitchen": {"neighbors": ["balcony", "dining", "courtyard"], "clue": False},
+    "courtyard": {"neighbors": ["kitchen", "library"], "clue": False},
+    "library": {"neighbors": ["courtyard", "stair"], "clue": True},
+    "utility": {"neighbors": ["main hall"], "clue": False},
+    "stair": {"neighbors": ["library", "room 1", "utility 2"], "clue": False},
+    "room 1": {"neighbors": ["stair"], "clue": False},
+    "utility 2": {"neighbors": ["stair", "master bedroom", "balcony 3"], "clue": False},
+    "master bedroom": {"neighbors": ["utility", "room 2", "balcony 3"], "clue": False},
+    "room 2": {"neighbors": ["master bedroom", "room 3", "balcony 2", "balcony 3"], "clue": False},
+    "room 3": {"neighbors": ["room 2", "balcony 2"], "clue": False},
+    "balcony 2": {"neighbors": ["room 3", "room 2", "balcony 3"], "clue": False},
+    "balcony 3": {"neighbors": ["utility", "master bedroom", "room 2", "balcony 2"], "clue": False},
+}
+
+def bfs(start_room):
+    visited = set()
+    queue = deque([(start_room, "No clue")])
+
+    while queue:
+        room, clue_status = queue.popleft()
+        if room not in visited:
+            visited.add(room)
+            neighbors = adjacency_list[room]["neighbors"]
+            if adjacency_list[room]["clue"]:
+                clue_status = "Found clue!!!"
+            else:
+                clue_status = "Found nothing...."
+            print("Visited:", room, "-->", clue_status)
+            queue.extend((neighbor, clue_status) for neighbor in neighbors)
+
+# Perform BFS starting from the "entrance" on the ground floor
+print("Begin searching:")
+bfs("entrance")
+```
